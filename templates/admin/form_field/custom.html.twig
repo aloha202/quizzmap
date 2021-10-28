@@ -1,0 +1,10 @@
+{% if ea.crud.currentAction == 'detail' %}
+    <ul>
+        {% for item in field.value %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    {{ field.formattedValue }}
+{% endif %}
+hellow orld echo echo echo
