@@ -1,0 +1,16 @@
+<h1>{{ question.name }}</h1>
+
+<form method="post" action="">
+
+    <ul>
+        {% for answer in question.answers %}
+        <li {% if currentAnswer and currentAnswer.id == answer.id %}{% if answer.isCorrect %}style="background: lightgreen"{% else %}style="background: red"{% endif %}{% endif %} >
+            <label>
+            <input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.name }}
+            </label>
+        </li>
+        {% endfor %}
+    </ul>
+    <input type="submit" value="Submit" >
+
+</form>
