@@ -8,6 +8,5 @@
 /var/
 /vendor/
 /quizzmap.project
-/.DS_Store
-.DS_Store
+**/.DS_Store
 ###< symfony/framework-bundle ###
