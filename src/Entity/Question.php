@@ -17,6 +17,9 @@ class Question
     const CONST_LEVEL_BEGINNER = 1;
     const CONST_LEVEL_INTERMEDIATE = 2;
     const CONST_LEVEL_ADVANCED = 3;
+
+    const CONST_TYPE_DEFAULT = 1;
+    const CONST_TYPE_PARSER = 2;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -25,7 +28,7 @@ class Question
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $name;
 
@@ -52,6 +55,11 @@ class Question
 
 
     private $pre_answers;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $type = 1;
 
 
     public function __construct()
@@ -175,6 +183,18 @@ class Question
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type): self
+    {
+        $this->type = $type;
+
+        return $this;
     }
 
 
