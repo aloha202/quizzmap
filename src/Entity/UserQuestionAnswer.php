@@ -45,6 +45,11 @@ class UserQuestionAnswer
      */
     private $points = 0;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $text;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +111,18 @@ class UserQuestionAnswer
     public function setPoints(int $points): self
     {
         $this->points = $points;
+
+        return $this;
+    }
+
+    public function getText(): ?string
+    {
+        return $this->text;
+    }
+
+    public function setText(?string $text): self
+    {
+        $this->text = $text;
 
         return $this;
     }
