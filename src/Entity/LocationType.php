@@ -34,10 +34,21 @@ class LocationType
      */
     private $questions;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=LocationType::class, inversedBy="childLocationTypes")
+     */
+    private $parent_location_type;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LocationType::class, mappedBy="parent_location_type")
+     */
+    private $childLocationTypes;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
         $this->questions = new ArrayCollection();
+        $this->childLocationTypes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,5 +130,47 @@ class LocationType
 
     public function __toString(){
         return $this->getName();
+    }
+
+    public function getParentLocationType(): ?self
+    {
+        return $this->parent_location_type;
+    }
+
+    public function setParentLocationType(?self $parent_location_type): self
+    {
+        $this->parent_location_type = $parent_location_type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getChildLocationTypes(): Collection
+    {
+        return $this->childLocationTypes;
+    }
+
+    public function addChildLocationType(self $childLocationType): self
+    {
+        if (!$this->childLocationTypes->contains($childLocationType)) {
+            $this->childLocationTypes[] = $childLocationType;
+            $childLocationType->setParentLocationType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChildLocationType(self $childLocationType): self
+    {
+        if ($this->childLocationTypes->removeElement($childLocationType)) {
+            // set the owning side to null (unless already changed)
+            if ($childLocationType->getParentLocationType() === $this) {
+                $childLocationType->setParentLocationType(null);
+            }
+        }
+
+        return $this;
     }
 }
