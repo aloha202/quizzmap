@@ -1,0 +1,29 @@
+html, body{
+    height: 100%;
+}
+
+#map{
+    width: 2048px;
+    height: 1536px;
+    background: url(../images/bigmap.jpeg) no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+#map .overshadow{
+    position: absolute;
+    background: black;
+    opacity: 70%;
+    z-index: 100;
+}
+
+#map .location{
+    width: 30px;
+    height: 60px;
+    background:  url(../images/pin.png) 50% 50% no-repeat;
+    background-color: transparent;
+    position: absolute;
+    cursor: pointer;
+    background-size: 200%;
+}
+

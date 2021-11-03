@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to the map{% endblock %}
+
+{% block body %}
+
+
+    <div id="map">
+
+        {% for location in locations %}
+            <div class="location" style="left: {{ location.left }}px; top: {{ location.top }}px" data-name="{{ location.name }}" data-type="{{ location.type.name }}" title="{{ location.name }}"></div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
