@@ -35,7 +35,7 @@ $(function (){
     });
 
     $('.location').click(function (){
-        alert($(this).data('name'));
+
     });
 
 })

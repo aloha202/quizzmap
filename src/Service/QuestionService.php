@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Question;
+use App\Repository\QuestionRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class QuestionService
@@ -15,8 +16,15 @@ class QuestionService
 
     private $requestParams = null;
 
-    public function __construct()
+    private $input_name = null;
+    /**
+     * @var QuestionRepository
+     */
+    private $questionRepository;
+
+    public function __construct(QuestionRepository $questionRepository)
     {
+        $this->questionRepository = $questionRepository;
     }
 
     public function processRequest(Request $request)
@@ -24,9 +32,20 @@ class QuestionService
         $this->requestParams = $request->request->get($this->parameter_name);
     }
 
-    public function getParsedHtml(Question $question):string
+    public function processAnsweredQuestions($data)
     {
+        $ids = array_keys($data);
 
+        $questions = $this->questionRepository->findByIds($ids);
+
+        dd($questions);
+    }
+
+    public function getParsedHtml(Question $question, $parameter_name = null):string
+    {
+        if($parameter_name){
+            $this->parameter_name = $parameter_name . '[' . $question->getId() . ']';
+        }
         $matches_input = $this->getMatchesInput($question);
         $matches_combo = $this->getMatchesCombo($question);
 

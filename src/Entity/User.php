@@ -17,6 +17,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use TimestampableEntity;
+
+    const STATUS_ANON = 'anon';
+    const STATUS_PENDING = 'pending';
+    const STATUS_REGISTERED = 'registered';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -59,6 +64,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="json", nullable=true)
      */
     private $roles = [];
+
+    /**
+     * @ORM\Column(type="string", length=15, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $level;
 
     public function __construct()
     {
@@ -212,6 +227,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?int $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getRealName():string
+    {
+        return $this->getName() ? $this->getName() : ($this->getStatus() == self::STATUS_ANON ? 'Anon' : $this->getEmail());
     }
 
 

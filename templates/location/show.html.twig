@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ location.name }}!{% endblock %}
+
+{% block body %}
+<div class="user-pannel-pad"></div>
+
+<div class="example-wrapper">
+    <h1>{{ location.name }}</h1>
+
+    <h3>{{ location.type.name }}</h3>
+
+    {% if questions|length %}
+    <div class="questions">
+        <form method="post">
+        {% for question in questions %}
+
+            <div class="question">
+                {% if question.type == constant('App\\Entity\\Question::CONST_TYPE_DEFAULT') %}
+                    <ul class="choice-question">
+                        {% for answer in question.answers %}
+                            <li  >
+                                <label>
+                                    <input type="radio" name="question[{{ question.id }}]" value="{{ answer.id }}">{{ answer.name }}
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elseif question.type == constant('App\\Entity\\Question::CONST_TYPE_PARSER') %}
+                    <div class="parser-question">
+                    {{ question|asHtml('question') }}
+                    </div>
+                {% endif %}
+                {% if loop.index0 %}
+                    <input type="button" value="Previous" class="button-previous">
+                {% endif %}
+
+                {% if loop.index == questions|length %}
+                    <input type="submit" value="Finish" class="button-next">
+                {% else %}
+                    <input type="button" value="Next" class="button-next">
+                {% endif %}
+            </div>
+
+        {% endfor %}
+        </form>
+    </div>
+    {% else %}
+        <div class="no-questions">There are no questions in the location <strong>{{ location.type.name }}</strong> yet</div>
+    {% endif %}
+</div>
+{% endblock %}

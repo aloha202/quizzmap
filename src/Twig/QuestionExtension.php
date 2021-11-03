@@ -34,8 +34,8 @@ class QuestionExtension extends AbstractExtension
         ];
     }
 
-    public function asHtml(Question $question):string
+    public function asHtml(Question $question, $parameter_name = null):string
     {
-        return $this->questionService->getParsedHtml($question);
+        return $this->questionService->getParsedHtml($question, $parameter_name);
     }
 }
