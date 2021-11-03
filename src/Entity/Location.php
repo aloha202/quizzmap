@@ -41,15 +41,7 @@ class Location
      */
     private $type;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Location::class, inversedBy="sublocations")
-     */
-    private $sublocations;
 
-    public function __construct()
-    {
-        $this->sublocations = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -104,37 +96,16 @@ class Location
         return $this;
     }
 
-    public function getSublocations(): ?self
+    public function getLeft():int
     {
-        return $this->sublocations;
+        $expl = explode('x', $this->position);
+        return intval($expl[0]);
     }
 
-    public function setSublocations(?self $sublocations): self
+    public function getTop():int
     {
-        $this->sublocations = $sublocations;
-
-        return $this;
+        $expl = explode('x', $this->position);
+        return intval($expl[1]);
     }
 
-    public function addSublocation(self $sublocation): self
-    {
-        if (!$this->sublocations->contains($sublocation)) {
-            $this->sublocations[] = $sublocation;
-            $sublocation->setSublocations($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSublocation(self $sublocation): self
-    {
-        if ($this->sublocations->removeElement($sublocation)) {
-            // set the owning side to null (unless already changed)
-            if ($sublocation->getSublocations() === $this) {
-                $sublocation->setSublocations(null);
-            }
-        }
-
-        return $this;
-    }
 }
