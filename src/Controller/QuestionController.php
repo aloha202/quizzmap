@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class QuestionController extends AbstractController
 {
-    #[Route('/question/{id}.html', name: 'question')]
+    #[Route('/question/{id}.html', name: 'question_show')]
     public function show(Question $question, Request $request, AnswerRepository $answerRepository, QuestionService $questionService): Response
     {
         $answer = null;
