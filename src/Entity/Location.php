@@ -41,6 +41,16 @@ class Location
      */
     private $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserQuizzTake::class, mappedBy="location", orphanRemoval=true)
+     */
+    private $userQuizzTakes;
+
+    public function __construct()
+    {
+        $this->userQuizzTakes = new ArrayCollection();
+    }
+
 
 
     public function getId(): ?int
@@ -106,6 +116,36 @@ class Location
     {
         $expl = explode('x', $this->position);
         return intval($expl[1]);
+    }
+
+    /**
+     * @return Collection|UserQuizzTake[]
+     */
+    public function getUserQuizzTakes(): Collection
+    {
+        return $this->userQuizzTakes;
+    }
+
+    public function addUserQuizzTake(UserQuizzTake $userQuizzTake): self
+    {
+        if (!$this->userQuizzTakes->contains($userQuizzTake)) {
+            $this->userQuizzTakes[] = $userQuizzTake;
+            $userQuizzTake->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserQuizzTake(UserQuizzTake $userQuizzTake): self
+    {
+        if ($this->userQuizzTakes->removeElement($userQuizzTake)) {
+            // set the owning side to null (unless already changed)
+            if ($userQuizzTake->getLocation() === $this) {
+                $userQuizzTake->setLocation(null);
+            }
+        }
+
+        return $this;
     }
 
 }

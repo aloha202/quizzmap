@@ -50,6 +50,22 @@ class UserQuestionAnswer
      */
     private $text;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=UserQuizzTake::class, inversedBy="userQuestionAnswers")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user_quizz_take;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $answer_text;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $question_type;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +139,42 @@ class UserQuestionAnswer
     public function setText(?string $text): self
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function getUserQuizzTake(): ?UserQuizzTake
+    {
+        return $this->user_quizz_take;
+    }
+
+    public function setUserQuizzTake(?UserQuizzTake $user_quizz_take): self
+    {
+        $this->user_quizz_take = $user_quizz_take;
+
+        return $this;
+    }
+
+    public function getAnswerText(): ?string
+    {
+        return $this->answer_text;
+    }
+
+    public function setAnswerText(?string $answer_text): self
+    {
+        $this->answer_text = $answer_text;
+
+        return $this;
+    }
+
+    public function getQuestionType(): ?int
+    {
+        return $this->question_type;
+    }
+
+    public function setQuestionType(int $question_type): self
+    {
+        $this->question_type = $question_type;
 
         return $this;
     }

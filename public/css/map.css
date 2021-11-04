@@ -26,4 +26,32 @@ html, body{
     cursor: pointer;
     background-size: 200%;
 }
+#map .location a{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 
+
+.user-pannel{
+    width: 100%;
+    height: 30px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    background: lightgray;
+    padding: 10px 15px 0;
+}
+.user-pannel-pad{
+    height: 40px;
+}
+
+.user-question{
+    margin: 15px 0;
+}
+.user-question-parser{}
+
+.user-question-parser span{
+    font-weight: bold;
+}

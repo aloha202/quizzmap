@@ -8,7 +8,9 @@
     <div id="map">
 
         {% for location in locations %}
-            <div class="location" style="left: {{ location.left }}px; top: {{ location.top }}px" data-name="{{ location.name }}" data-type="{{ location.type.name }}" title="{{ location.name }}"></div>
+            <div class="location" style="left: {{ location.left }}px; top: {{ location.top }}px" data-name="{{ location.name }}" data-type="{{ location.type.name }}" title="{{ location.name }}">
+                <a href="{{ path('location', {id: location.id}) }}" target="_blank"></a>
+            </div>
         {% endfor %}
     </div>
 

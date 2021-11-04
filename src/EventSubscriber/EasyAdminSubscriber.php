@@ -25,33 +25,4 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function saveAnswers(AfterEntityUpdatedEvent $event)
-    {
-        $entity = $event->getEntityInstance();
-
-        if (!($entity instanceof Question)) {
-            return;
-        }
-
-        foreach($entity->getPreAnswers() as $answer)
-        {
-            $answer->setQuestion($entity);
-            $this->em->persist($answer);
-        }
-
-        $this->em->flush();
-    }
-
-    public function loadAnswers(AfterEntityBuiltEvent $event)
-    {
-        $entity = $event->getEntity()->getInstance();
-
-
-        if (!($entity instanceof Question)) {
-            return;
-        }
-
-
-
-    }
 }

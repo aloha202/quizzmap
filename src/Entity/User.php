@@ -17,6 +17,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
     use TimestampableEntity;
+
+    const STATUS_ANON = 'anon';
+    const STATUS_PENDING = 'pending';
+    const STATUS_REGISTERED = 'registered';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -60,9 +65,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $roles = [];
 
+    /**
+     * @ORM\Column(type="string", length=15, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $level;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserQuizzTake::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $userQuizzTakes;
+
     public function __construct()
     {
         $this->userQuestionAnswers = new ArrayCollection();
+        $this->userQuizzTakes = new ArrayCollection();
     }
 
 
@@ -212,6 +233,70 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?int $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    public function getRealName():string
+    {
+        return $this->getName() ? $this->getName() : ($this->getStatus() == self::STATUS_ANON ? 'Anon' : $this->getEmail());
+    }
+
+    /**
+     * @return Collection|UserQuizzTake[]
+     */
+    public function getUserQuizzTakes(): Collection
+    {
+        return $this->userQuizzTakes;
+    }
+
+    public function addUserQuizzTake(UserQuizzTake $userQuizzTake): self
+    {
+        if (!$this->userQuizzTakes->contains($userQuizzTake)) {
+            $this->userQuizzTakes[] = $userQuizzTake;
+            $userQuizzTake->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserQuizzTake(UserQuizzTake $userQuizzTake): self
+    {
+        if ($this->userQuizzTakes->removeElement($userQuizzTake)) {
+            // set the owning side to null (unless already changed)
+            if ($userQuizzTake->getUser() === $this) {
+                $userQuizzTake->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getEmail();
     }
 
 
