@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ userQuizzTake.location.name }}{% endblock %}
+
+{% block body %}
+    <div class="user-pannel-pad"></div>
+
+    <h1>{{ userQuizzTake.location.name }}</h1>
+    <h2>Your Quizz results</h2>
+
+    {% for userAnswer in userQuizzTake.userQuestionAnswers %}
+
+        {% if userAnswer.questionType == constant("App\\Entity\\Question::CONST_TYPE_DEFAULT") %}
+        <div class="user-question user-question-default">
+            <div><strong>{{ loop.index }}. {{ userAnswer.text }}</strong></div>
+            <div><span style="background-color: {% if userAnswer.isCorrect %}lightgreen{% else %}pink{% endif %}">{{ userAnswer.answerText }}</span></div>
+        </div>
+        {% elseif(userAnswer.questionType == constant("App\\Entity\\Question::CONST_TYPE_PARSER")) %}
+        <div class="user-question user-question-parser">
+            <div><strong>{{ loop.index }}. </strong>{{ userAnswer|asAnsweredHtml }}</div>
+        </div>
+        {% endif %}
+
+    {% endfor %}
+
+{% endblock %}

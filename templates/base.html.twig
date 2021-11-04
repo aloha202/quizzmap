@@ -20,12 +20,12 @@
     </head>
     <body>
         <div class="user-pannel">
-            {% set User = app.session.get('User') %}
-            Hello, <strong>{{ User.realName }}</strong>
+
+            Hello, <strong>{{ User().realName }}</strong>
             |
-            Points: <strong>{{ User.points }}</strong>
+            Points: <strong>{{ User().points }}</strong>
             |
-            Level: <strong>{{ User.level|default('N/A') }}</strong>
+            Level: <strong>{{ User().level|default('N/A') }}</strong>
             |
             <a href="#">Login</a>
             |

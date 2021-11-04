@@ -26,7 +26,7 @@ class QuestionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('q')
             ->andWhere('q.location_type = :type')
             ->setParameter('type', $location->getType())
-            ->orderBy('q.id', 'ASC')
+            ->orderBy('q.id', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()

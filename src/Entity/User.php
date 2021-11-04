@@ -75,9 +75,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $level;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserQuizzTake::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $userQuizzTakes;
+
     public function __construct()
     {
         $this->userQuestionAnswers = new ArrayCollection();
+        $this->userQuizzTakes = new ArrayCollection();
     }
 
 
@@ -256,6 +262,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRealName():string
     {
         return $this->getName() ? $this->getName() : ($this->getStatus() == self::STATUS_ANON ? 'Anon' : $this->getEmail());
+    }
+
+    /**
+     * @return Collection|UserQuizzTake[]
+     */
+    public function getUserQuizzTakes(): Collection
+    {
+        return $this->userQuizzTakes;
+    }
+
+    public function addUserQuizzTake(UserQuizzTake $userQuizzTake): self
+    {
+        if (!$this->userQuizzTakes->contains($userQuizzTake)) {
+            $this->userQuizzTakes[] = $userQuizzTake;
+            $userQuizzTake->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserQuizzTake(UserQuizzTake $userQuizzTake): self
+    {
+        if ($this->userQuizzTakes->removeElement($userQuizzTake)) {
+            // set the owning side to null (unless already changed)
+            if ($userQuizzTake->getUser() === $this) {
+                $userQuizzTake->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getEmail();
     }
 
 

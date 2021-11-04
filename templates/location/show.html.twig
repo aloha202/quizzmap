@@ -8,7 +8,7 @@
 <div class="example-wrapper">
     <h1>{{ location.name }}</h1>
 
-    <h3>{{ location.type.name }}</h3>
+    <h2>{{ location.type.name }}</h2>
 
     {% if questions|length %}
     <div class="questions">
@@ -17,6 +17,7 @@
 
             <div class="question">
                 {% if question.type == constant('App\\Entity\\Question::CONST_TYPE_DEFAULT') %}
+                    <h3>{{ question.name }}</h3>
                     <ul class="choice-question">
                         {% for answer in question.answers %}
                             <li  >

@@ -3,14 +3,23 @@
 namespace App\Service;
 
 use App\Entity\Question;
+use App\Entity\Location;
+use App\Entity\UserQuizzTake;
+use App\Entity\UserQuestionAnswer;
+use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class QuestionService
 {
 
     private $pattern_input = "/\[\[(.*?)\]\]/";
     private $pattern_combo = "/\{\{(.*?)\}\}/";
+
+    private $uqa_parser_delim_array = ';;';
+    private $uqa_parser_delim_correct = '::';
 
     private $parameter_name = 'answers';
 
@@ -21,10 +30,41 @@ class QuestionService
      * @var QuestionRepository
      */
     private $questionRepository;
+    /**
+     * @var AnswerRepository
+     */
+    private $answerRepository;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
 
-    public function __construct(QuestionRepository $questionRepository)
+    /**
+     * @var Location
+     */
+    private $location;
+
+    /**
+     * @var UserQuizzTake
+     */
+    private $userQuizzTake;
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(QuestionRepository $questionRepository, AnswerRepository $answerRepository,
+                                EntityManagerInterface $entityManager, UserService $userService)
     {
         $this->questionRepository = $questionRepository;
+        $this->answerRepository = $answerRepository;
+        $this->entityManager = $entityManager;
+        $this->userService = $userService;
+    }
+
+    public function setLocation(Location $location):void
+    {
+        $this->location = $location;
     }
 
     public function processRequest(Request $request)
@@ -32,13 +72,91 @@ class QuestionService
         $this->requestParams = $request->request->get($this->parameter_name);
     }
 
-    public function processAnsweredQuestions($data)
+    public function processAnsweredQuestions($data):bool
     {
+        $this->_createUserQuizzTake();
+
         $ids = array_keys($data);
 
         $questions = $this->questionRepository->findByIds($ids);
 
-        dd($questions);
+        $result = true;
+        foreach($questions as $question){
+            if(!$this->answerQuestion($question, $data[$question->getId()])){
+                $result = false;
+            }
+        }
+        if($result) {
+            $this->entityManager->flush();
+        }
+        return $result;
+    }
+
+    public function answerQuestion(Question $question, mixed $answerData):bool
+    {
+        if($question->getType() == Question::CONST_TYPE_DEFAULT){
+            return $this->answerQuestionDefault($question, $answerData);
+        }elseif($question->getType() == Question::CONST_TYPE_PARSER){
+            return $this->answerQuestionParser($question, $answerData);
+        }
+        return false;
+    }
+    public function answerQuestionDefault(Question $question, ?int $answer_id):bool
+    {
+        if(!$answer_id){
+            return false;
+        }
+
+        $answer = $this->answerRepository->find($answer_id);
+        if(!$answer){
+            return false;
+        }
+
+
+        $uqa = $this->_getUqa();
+        $uqa->setAnswer($answer);
+        $uqa->setQuestion($question);
+        $uqa->setIsCorrect($answer->getIsCorrect());
+        $uqa->setText($question->getName());
+        $uqa->setAnswerText($answer->getName());
+        $uqa->setQuestionType(Question::CONST_TYPE_DEFAULT);
+
+        $this->entityManager->persist($uqa);
+        return true;
+    }
+
+    public function answerQuestionParser(Question $question, array $data):bool
+    {
+
+        /*
+        $matches_input = $this->getMatchesInput($question);
+        $matches_combo = $this->getMatchesCombo($question);
+
+        $answerData = [];
+
+        if(!empty($matches_combo[0])) {
+            foreach ($matches_combo[0] as $key => $value){
+                $answerData[] = $value . $this->uqa_parser_delim_correct . $data['combo'][$key];
+            }
+        }
+        if(!empty($matches_input[0])) {
+            foreach ($matches_input[0] as $key => $value){
+                $answerData[] = $value . $this->uqa_parser_delim_correct . $data['input'][$key];
+            }
+        }
+        */
+
+        $uqa = $this->_getUqa();
+
+        $uqa->setQuestion($question);
+      //  $uqa->setText(join($this->uqa_parser_delim_array, $answerData));
+        $uqa->setText($question->getName());
+        $uqa->setAnswerText(serialize($data));
+        $uqa->setQuestionType(Question::CONST_TYPE_PARSER);
+
+        $this->entityManager->persist($uqa);
+
+        return true;
     }
 
     public function getParsedHtml(Question $question, $parameter_name = null):string
@@ -46,8 +164,8 @@ class QuestionService
         if($parameter_name){
             $this->parameter_name = $parameter_name . '[' . $question->getId() . ']';
         }
-        $matches_input = $this->getMatchesInput($question);
-        $matches_combo = $this->getMatchesCombo($question);
+        $matches_input = $this->getMatchesInput($question->getName());
+        $matches_combo = $this->getMatchesCombo($question->getName());
 
         $replacements = [];
 
@@ -69,15 +187,15 @@ class QuestionService
 
     }
 
-    public function getMatchesInput(Question $question):?array
+    public function getMatchesInput(string $question_text):?array
     {
-        preg_match_all($this->pattern_input, $question, $matches);
+        preg_match_all($this->pattern_input, $question_text, $matches);
         return $matches;
     }
 
-    public function getMatchesCombo(Question $question):?array
+    public function getMatchesCombo(string $question_text):?array
     {
-        preg_match_all($this->pattern_combo, $question, $matches);
+        preg_match_all($this->pattern_combo, $question_text, $matches);
         return $matches;
     }
 
@@ -147,5 +265,37 @@ class QuestionService
             case -1:
                 return "style='border: solid 2px red'";
         }
+    }
+
+    private function _createUserQuizzTake():void
+    {
+        $User = $this->userService->getUser();
+
+        $this->userQuizzTake = new UserQuizzTake();
+        $this->userQuizzTake->setUser($User);
+        $this->userQuizzTake->setLocation($this->location);
+        $this->userQuizzTake->setCreatedAt(new \DateTime());
+        $this->userQuizzTake->setUpdatedAt(new \DateTime());
+
+        $this->entityManager->persist($this->userQuizzTake);
+    }
+
+    private function _getUqa():UserQuestionAnswer
+    {
+        $User = $this->userService->getUser();
+
+        $uqa = new UserQuestionAnswer();
+
+        $uqa->setUser($User);
+        $uqa->setCreatedAt(new \DateTime());
+        $uqa->setUpdatedAt(new \DateTime());
+        $uqa->setUserQuizzTake($this->userQuizzTake);
+
+        return $uqa;
+    }
+
+    public function getUserQuizzTake():UserQuizzTake
+    {
+        return $this->userQuizzTake;
     }
 }

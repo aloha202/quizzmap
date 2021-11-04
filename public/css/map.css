@@ -46,3 +46,12 @@ html, body{
 .user-pannel-pad{
     height: 40px;
 }
+
+.user-question{
+    margin: 15px 0;
+}
+.user-question-parser{}
+
+.user-question-parser span{
+    font-weight: bold;
+}
