@@ -38,7 +38,7 @@ class UserQuizzTake
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $points;
+    private $points = 0;
 
     /**
      * @ORM\OneToMany(targetEntity=UserQuestionAnswer::class, mappedBy="user_quizz_take", orphanRemoval=true)
@@ -119,5 +119,10 @@ class UserQuizzTake
         }
 
         return $this;
+    }
+
+    public function addPoints($points):void
+    {
+        $this->points += $points;
     }
 }

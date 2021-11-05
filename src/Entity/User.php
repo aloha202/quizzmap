@@ -299,5 +299,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->getEmail();
     }
 
+    public function addPoints($points):void
+    {
+        $this->points += $points;
+    }
+
 
 }

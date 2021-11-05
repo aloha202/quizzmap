@@ -61,6 +61,11 @@ class Question
      */
     private $type = 1;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $points;
+
 
     public function __construct()
     {
@@ -193,6 +198,18 @@ class Question
     public function setType(int $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getPoints(): ?int
+    {
+        return $this->points;
+    }
+
+    public function setPoints(?int $points): self
+    {
+        $this->points = $points;
 
         return $this;
     }
