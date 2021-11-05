@@ -19,18 +19,7 @@
         {% endblock %}
     </head>
     <body>
-        <div class="user-pannel">
-
-            Hello, <strong>{{ User().realName }}</strong>
-            |
-            Points: <strong>{{ User().points }}</strong>
-            |
-            Level: <strong>{{ User().level|default('N/A') }}</strong>
-            |
-            <a href="#">Login</a>
-            |
-            <a href="#">Register</a>
-        </div>
+        {% block user %}{% endblock %}
 
         {% block body %}{% endblock %}
     </body>
