@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LocationController extends AbstractController
 {
-    #[Route('/location/{id}.html', name: 'location')]
+    #[Route('/map/location/{id}.html', name: 'location')]
     public function index(Location $location, QuestionRepository $questionRepository, Request $request, QuestionService $questionService): Response
     {
         if($request->isMethod('post')){
@@ -32,7 +32,7 @@ class LocationController extends AbstractController
         ]);
     }
 
-    #[Route('/results/{id}.html', name: 'quizz_results')]
+    #[Route('/map/results/{id}.html', name: 'quizz_results')]
     public function results(UserQuizzTake $userQuizzTake, UserService $userService)
     {
         if($userService->getUser()->getId() != $userQuizzTake->getUser()->getId()){

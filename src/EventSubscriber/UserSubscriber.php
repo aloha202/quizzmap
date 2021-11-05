@@ -4,8 +4,10 @@ namespace App\EventSubscriber;
 
 use App\Service\UserService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\Security\Core\Security;
 
 class UserSubscriber implements EventSubscriberInterface
 {
@@ -16,11 +18,18 @@ class UserSubscriber implements EventSubscriberInterface
      */
     private $userService;
 
-    public function __construct(UserService $userService)
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+
+    public function __construct(UserService $userService, RequestStack $requestStack)
     {
 
-
         $this->userService = $userService;
+
+        $this->requestStack = $requestStack;
     }
 
     public static function getSubscribedEvents()
@@ -32,6 +41,10 @@ class UserSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event)
     {
-        $this->userService->checkUser();
+
+        if(preg_match('/^\/map/', $event->getRequest()->getPathInfo())){
+            $this->userService->checkUser();
+        }
+
     }
 }

@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\Security;
 
 class UserService
 {
@@ -40,15 +41,23 @@ class UserService
 
         $session = $this->requestStack->getSession();
 
-        if(!$session->has('user_id')){
-            $session->set('user_id', $this->createAnon());
-        }
+        if($session->has(Security::LAST_USERNAME)){
+            $this->user = $this->userRepository->findOneBy(['email' => $session->get(Security::LAST_USERNAME)]);
+            if(!$this->user){
+                throw new UserNotFoundException("User not found in the database");
+            }
+        }else {
 
-        if(!$this->user) {
-            $this->user = $this->userRepository->find($session->get('user_id'));
-        }
-        if(!$this->user){
-            throw new UserNotFoundException("User not found in the database");
+            if (!$session->has('user_id')) {
+                $session->set('user_id', $this->createAnon());
+            }
+
+            if (!$this->user) {
+                $this->user = $this->userRepository->find($session->get('user_id'));
+            }
+            if (!$this->user) {
+                throw new UserNotFoundException("User not found in the database");
+            }
         }
     //    $this->entityManager->persist($session->get('User'));
 
