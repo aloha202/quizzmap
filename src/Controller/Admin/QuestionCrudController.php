@@ -49,7 +49,7 @@ class QuestionCrudController extends AbstractCrudController
             TextareaField::new('name'),
             CollectionField::new('answers')
                 ->setFormTypeOption('entry_type', AnswerType::class)
-                ->setCssClass('admin-answers-collection')
+                ->addCssClass('admin-answers-collection')
 //            AssociationField::new('answers')->setFormTypeOptions(['by_reference' => false])
 
 
