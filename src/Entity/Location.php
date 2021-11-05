@@ -46,9 +46,20 @@ class Location
      */
     private $userQuizzTakes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Location::class, inversedBy="locations")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Location::class, mappedBy="parent")
+     */
+    private $locations;
+
     public function __construct()
     {
         $this->userQuizzTakes = new ArrayCollection();
+        $this->locations = new ArrayCollection();
     }
 
 
@@ -147,5 +158,53 @@ class Location
 
         return $this;
     }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getLocations(): Collection
+    {
+        return $this->locations;
+    }
+
+    public function addLocation(self $location): self
+    {
+        if (!$this->locations->contains($location)) {
+            $this->locations[] = $location;
+            $location->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLocation(self $location): self
+    {
+        if ($this->locations->removeElement($location)) {
+            // set the owning side to null (unless already changed)
+            if ($location->getParent() === $this) {
+                $location->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
 
 }
