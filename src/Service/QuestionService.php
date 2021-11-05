@@ -87,6 +87,7 @@ class QuestionService
             }
         }
         if($result) {
+            $this->userService->getUser()->addPoints($this->userQuizzTake->getPoints());
             $this->entityManager->flush();
         }
         return $result;
@@ -112,6 +113,10 @@ class QuestionService
             return false;
         }
 
+        $points = 0;
+        if($answer->getIsCorrect()){
+            $points = $question->getPoints();
+        }
 
         $uqa = $this->_getUqa();
         $uqa->setAnswer($answer);
@@ -120,6 +125,9 @@ class QuestionService
         $uqa->setText($question->getName());
         $uqa->setAnswerText($answer->getName());
         $uqa->setQuestionType(Question::CONST_TYPE_DEFAULT);
+        $uqa->setPoints($points);
+
+        $this->userQuizzTake->addPoints($points);
 
         $this->entityManager->persist($uqa);
         return true;
@@ -128,23 +136,33 @@ class QuestionService
     public function answerQuestionParser(Question $question, array $data):bool
     {
 
-        /*
+
         $matches_input = $this->getMatchesInput($question);
         $matches_combo = $this->getMatchesCombo($question);
 
-        $answerData = [];
 
+        $correct = true;
         if(!empty($matches_combo[0])) {
             foreach ($matches_combo[0] as $key => $value){
-                $answerData[] = $value . $this->uqa_parser_delim_correct . $data['combo'][$key];
+                $answer = $data['combo'][$key];
+                if(!$answer || strpos($value, '[' . $answer . ']') == -1){
+                    $correct = false;
+                    break;
+                }
             }
         }
         if(!empty($matches_input[0])) {
             foreach ($matches_input[0] as $key => $value){
-                $answerData[] = $value . $this->uqa_parser_delim_correct . $data['input'][$key];
+                $answer = $data['input'][$key];
+                if(!$answer || strpos($value, $answer) == -1){
+                    $correct = false;
+                    break;
+                }
             }
         }
-        */
+
+        $points = $correct ? $question->getPoints() : 0;
+
 
         $uqa = $this->_getUqa();
 
@@ -153,11 +171,17 @@ class QuestionService
         $uqa->setText($question->getName());
         $uqa->setAnswerText(serialize($data));
         $uqa->setQuestionType(Question::CONST_TYPE_PARSER);
+        $uqa->setIsCorrect($correct);
+        $uqa->setPoints($points);
+
+        $this->userQuizzTake->addPoints($points);
 
         $this->entityManager->persist($uqa);
 
         return true;
     }
+
+
 
     public function getParsedHtml(Question $question, $parameter_name = null):string
     {

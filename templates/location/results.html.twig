@@ -14,10 +14,12 @@
         <div class="user-question user-question-default">
             <div><strong>{{ loop.index }}. {{ userAnswer.text }}</strong></div>
             <div><span style="background-color: {% if userAnswer.isCorrect %}lightgreen{% else %}pink{% endif %}">{{ userAnswer.answerText }}</span></div>
+            <div>{{ userAnswer.points }} points</div>
         </div>
         {% elseif(userAnswer.questionType == constant("App\\Entity\\Question::CONST_TYPE_PARSER")) %}
         <div class="user-question user-question-parser">
             <div><strong>{{ loop.index }}. </strong>{{ userAnswer|asAnsweredHtml }}</div>
+            <div>{{ userAnswer.points }} points</div>
         </div>
         {% endif %}
 

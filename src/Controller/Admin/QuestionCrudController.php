@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use function Symfony\Component\String\s;
@@ -32,17 +33,19 @@ class QuestionCrudController extends AbstractCrudController
     {
         return [
             AssociationField::new('location_type'),
+            /*
             ChoiceField::new('level')->setChoices(
                 [
                     'Beginner' => Question::CONST_LEVEL_BEGINNER,
                     'Intermediate' => Question::CONST_LEVEL_INTERMEDIATE,
                     'Advanced' => Question::CONST_LEVEL_ADVANCED
                 ]
-            )->autocomplete(false),
+            )->autocomplete(false), */
             ChoiceField::new('type')->setChoices([
                'Default' => Question::CONST_TYPE_DEFAULT,
                'Parser'=>Question::CONST_TYPE_PARSER
             ]),
+            NumberField::new('points'),
             TextareaField::new('name'),
             CollectionField::new('answers')
                 ->setFormTypeOption('entry_type', AnswerType::class)
