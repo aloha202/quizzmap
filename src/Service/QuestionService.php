@@ -126,6 +126,7 @@ class QuestionService
         $uqa->setAnswerText($answer->getName());
         $uqa->setQuestionType(Question::CONST_TYPE_DEFAULT);
         $uqa->setPoints($points);
+        $uqa->setPossiblePoints($question->getPoints());
 
         $this->userQuizzTake->addPoints($points);
 
@@ -173,6 +174,7 @@ class QuestionService
         $uqa->setQuestionType(Question::CONST_TYPE_PARSER);
         $uqa->setIsCorrect($correct);
         $uqa->setPoints($points);
+        $uqa->setPossiblePoints($question->getPoints());
 
         $this->userQuizzTake->addPoints($points);
 
