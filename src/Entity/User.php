@@ -80,6 +80,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $userQuizzTakes;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $rating;
+
     public function __construct()
     {
         $this->userQuestionAnswers = new ArrayCollection();
@@ -302,6 +307,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addPoints($points):void
     {
         $this->points += $points;
+    }
+
+    public function getRating(): ?float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(?float $rating): self
+    {
+        $this->rating = $rating;
+
+        return $this;
     }
 
 

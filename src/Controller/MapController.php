@@ -14,7 +14,7 @@ class MapController extends AbstractController
     public function index(LocationRepository $locationRepository, AreaRepository $areaRepository): Response
     {
         $area = $areaRepository->find(1);
-        $locations = $locationRepository->findBy(['area' => $area]);
+        $locations = $locationRepository->findBy(['area' => $area, 'parent' => null]);
         return $this->render('map/index.html.twig', [
             'locations' => $locations,
         ]);

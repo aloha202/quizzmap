@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\LocationType;
 use App\Entity\Question;
 use App\Entity\Location;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -25,7 +26,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Html');
+            ->setTitle('QuizzMap admin board');
     }
 
     public function configureMenuItems(): iterable
@@ -35,5 +36,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Location Types', 'fas fa-list', LocationType::class);
         yield MenuItem::linkToCrud('Locations', 'fas fa-list', Location::class);
         yield MenuItem::linkToCrud('Questions', 'fas fa-list', Question::class);
+        yield MenuItem::linkToCrud('Users', 'fas fa-user', User::class);
     }
 }
