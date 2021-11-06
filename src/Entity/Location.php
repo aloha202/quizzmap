@@ -56,6 +56,41 @@ class Location
      */
     private $locations;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $num_of_questions = 10;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $pass_rate = 7;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $min_points;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $min_rating;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $difficulty_from;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $difficulty_to;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_active;
+
     public function __construct()
     {
         $this->userQuizzTakes = new ArrayCollection();
@@ -204,6 +239,90 @@ class Location
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function getNumOfQuestions(): ?int
+    {
+        return $this->num_of_questions;
+    }
+
+    public function setNumOfQuestions(int $num_of_questions): self
+    {
+        $this->num_of_questions = $num_of_questions;
+
+        return $this;
+    }
+
+    public function getPassRate(): ?int
+    {
+        return $this->pass_rate;
+    }
+
+    public function setPassRate(?int $pass_rate): self
+    {
+        $this->pass_rate = $pass_rate;
+
+        return $this;
+    }
+
+    public function getMinPoints(): ?int
+    {
+        return $this->min_points;
+    }
+
+    public function setMinPoints(?int $min_points): self
+    {
+        $this->min_points = $min_points;
+
+        return $this;
+    }
+
+    public function getMinRating(): ?int
+    {
+        return $this->min_rating;
+    }
+
+    public function setMinRating(?int $min_rating): self
+    {
+        $this->min_rating = $min_rating;
+
+        return $this;
+    }
+
+    public function getDifficultyFrom(): ?int
+    {
+        return $this->difficulty_from;
+    }
+
+    public function setDifficultyFrom(?int $difficulty_from): self
+    {
+        $this->difficulty_from = $difficulty_from;
+
+        return $this;
+    }
+
+    public function getDifficultyTo(): ?int
+    {
+        return $this->difficulty_to;
+    }
+
+    public function setDifficultyTo(?int $difficulty_to): self
+    {
+        $this->difficulty_to = $difficulty_to;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->is_active;
+    }
+
+    public function setIsActive(bool $is_active): self
+    {
+        $this->is_active = $is_active;
+
+        return $this;
     }
 
 
