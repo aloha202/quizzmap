@@ -53,6 +53,8 @@ class QuestionService
      */
     private $userService;
 
+    private $correct_answers = 0;
+
     public function __construct(QuestionRepository $questionRepository, AnswerRepository $answerRepository,
                                 EntityManagerInterface $entityManager, UserService $userService)
     {
@@ -88,6 +90,9 @@ class QuestionService
         }
         if($result) {
             $this->userService->getUser()->addPoints($this->userQuizzTake->getPoints());
+            if($this->location->getPassRate() && $this->correct_answers >= $this->location->getPassRate()){
+                $this->userQuizzTake->setIsPassed(true);
+            }
             $this->entityManager->flush();
         }
         return $result;
@@ -116,6 +121,7 @@ class QuestionService
         $points = 0;
         if($answer->getIsCorrect()){
             $points = $question->getPoints();
+            $this->correct_answers++;
         }
 
         $uqa = $this->_getUqa();
@@ -126,6 +132,7 @@ class QuestionService
         $uqa->setAnswerText($answer->getName());
         $uqa->setQuestionType(Question::CONST_TYPE_DEFAULT);
         $uqa->setPoints($points);
+        $uqa->setPossiblePoints($question->getPoints());
 
         $this->userQuizzTake->addPoints($points);
 
@@ -139,6 +146,8 @@ class QuestionService
 
         $matches_input = $this->getMatchesInput($question);
         $matches_combo = $this->getMatchesCombo($question);
+
+        $points = 0;
 
 
         $correct = true;
@@ -161,7 +170,11 @@ class QuestionService
             }
         }
 
-        $points = $correct ? $question->getPoints() : 0;
+        if($correct){
+            $points = $question->getPoints();
+            $this->correct_answers++;
+        }
+
 
 
         $uqa = $this->_getUqa();
@@ -173,6 +186,7 @@ class QuestionService
         $uqa->setQuestionType(Question::CONST_TYPE_PARSER);
         $uqa->setIsCorrect($correct);
         $uqa->setPoints($points);
+        $uqa->setPossiblePoints($question->getPoints());
 
         $this->userQuizzTake->addPoints($points);
 

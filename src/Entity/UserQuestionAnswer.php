@@ -66,6 +66,11 @@ class UserQuestionAnswer
      */
     private $question_type;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $possible_points;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -175,6 +180,18 @@ class UserQuestionAnswer
     public function setQuestionType(int $question_type): self
     {
         $this->question_type = $question_type;
+
+        return $this;
+    }
+
+    public function getPossiblePoints(): ?int
+    {
+        return $this->possible_points;
+    }
+
+    public function setPossiblePoints(?int $possible_points): self
+    {
+        $this->possible_points = $possible_points;
 
         return $this;
     }
