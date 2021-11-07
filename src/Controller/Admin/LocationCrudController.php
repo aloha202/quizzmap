@@ -22,7 +22,6 @@ class LocationCrudController extends AbstractCrudController
     {
         return [
             AssociationField::new('parent'),
-            AssociationField::new('area'),
             AssociationField::new('type'),
             TextField::new('name'),
             TextField::new('position'),

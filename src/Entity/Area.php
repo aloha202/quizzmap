@@ -29,10 +29,6 @@ class Area
      */
     private $boundries;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Location::class, mappedBy="area", orphanRemoval=true)
-     */
-    private $locations;
 
     public function __construct()
     {
@@ -68,35 +64,6 @@ class Area
         return $this;
     }
 
-    /**
-     * @return Collection|Location[]
-     */
-    public function getLocations(): Collection
-    {
-        return $this->locations;
-    }
-
-    public function addLocation(Location $location): self
-    {
-        if (!$this->locations->contains($location)) {
-            $this->locations[] = $location;
-            $location->setArea($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLocation(Location $location): self
-    {
-        if ($this->locations->removeElement($location)) {
-            // set the owning side to null (unless already changed)
-            if ($location->getArea() === $this) {
-                $location->setArea(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function __toString(){
         return $this->getName();

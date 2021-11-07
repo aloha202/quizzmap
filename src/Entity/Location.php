@@ -29,11 +29,6 @@ class Location
      */
     private $position;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Area::class, inversedBy="locations")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $area;
 
     /**
      * @ORM\ManyToOne(targetEntity=LocationType::class, inversedBy="locations")
@@ -92,9 +87,15 @@ class Location
     private $is_active;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\OneToOne(targetEntity=Submap::class, mappedBy="location", cascade={"persist", "remove"})
      */
-    private $mapsize;
+    private $submap;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Submap::class, inversedBy="locations")
+     */
+    private $parent_map;
+    
 
     public function __construct()
     {
@@ -129,18 +130,6 @@ class Location
     public function setPosition(?string $position): self
     {
         $this->position = $position;
-
-        return $this;
-    }
-
-    public function getArea(): ?Area
-    {
-        return $this->area;
-    }
-
-    public function setArea(?Area $area): self
-    {
-        $this->area = $area;
 
         return $this;
     }
@@ -330,14 +319,31 @@ class Location
         return $this;
     }
 
-    public function getMapsize(): ?string
+    public function getSubmap(): ?Submap
     {
-        return $this->mapsize;
+        return $this->submap;
     }
 
-    public function setMapsize(?string $mapsize): self
+    public function setSubmap(Submap $submap): self
     {
-        $this->mapsize = $mapsize;
+        // set the owning side of the relation if necessary
+        if ($submap->getLocation() !== $this) {
+            $submap->setLocation($this);
+        }
+
+        $this->submap = $submap;
+
+        return $this;
+    }
+
+    public function getParentMap(): ?Submap
+    {
+        return $this->parent_map;
+    }
+
+    public function setParentMap(?Submap $parent_map): self
+    {
+        $this->parent_map = $parent_map;
 
         return $this;
     }
