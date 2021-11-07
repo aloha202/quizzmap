@@ -45,6 +45,11 @@ class UserQuizzTake
      */
     private $userQuestionAnswers;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $is_passed;
+
     public function __construct()
     {
         $this->userQuestionAnswers = new ArrayCollection();
@@ -124,5 +129,17 @@ class UserQuizzTake
     public function addPoints($points):void
     {
         $this->points += $points;
+    }
+
+    public function getIsPassed(): ?bool
+    {
+        return $this->is_passed;
+    }
+
+    public function setIsPassed(?bool $is_passed): self
+    {
+        $this->is_passed = $is_passed;
+
+        return $this;
     }
 }

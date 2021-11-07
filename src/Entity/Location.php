@@ -91,6 +91,11 @@ class Location
      */
     private $is_active;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $mapsize;
+
     public function __construct()
     {
         $this->userQuizzTakes = new ArrayCollection();
@@ -321,6 +326,18 @@ class Location
     public function setIsActive(bool $is_active): self
     {
         $this->is_active = $is_active;
+
+        return $this;
+    }
+
+    public function getMapsize(): ?string
+    {
+        return $this->mapsize;
+    }
+
+    public function setMapsize(?string $mapsize): self
+    {
+        $this->mapsize = $mapsize;
 
         return $this;
     }
