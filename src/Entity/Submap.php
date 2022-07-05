@@ -98,4 +98,9 @@ class Submap
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getLocation()->getName();
+    }
 }

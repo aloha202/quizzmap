@@ -59,7 +59,7 @@ class Location
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $pass_rate = 7;
+    private $pass_rate;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -348,5 +348,37 @@ class Location
         return $this;
     }
 
+
+    public function getMapsize()
+    {
+        if($this->getSubmap()) {
+            return $this->getSubmap()->getMapsize();
+        }
+        return '';
+    }
+
+    public function setMapsize($value)
+    {
+        if($value){
+            if(!$this->getSubmap()){
+                $submap = new Submap();
+                $submap->setLocation($this);
+                $this->setSubmap($submap);
+            }
+        }
+        if($this->getSubmap()){
+            $this->getSubmap()->setMapsize($value);
+        }
+    }
+
+    public function hasSubmap()
+    {
+        return $this->getSubmap() != null;
+    }
+
+    public function isParent()
+    {
+        return $this->parent == null;
+    }
 
 }
