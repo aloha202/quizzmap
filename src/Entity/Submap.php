@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\AreaRepository;
+use App\Repository\SubmapRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AreaRepository::class)
+ * @ORM\Entity(repositoryClass=SubmapRepository::class)
  */
-class Area
+class Submap
 {
     /**
      * @ORM\Id
@@ -20,17 +20,18 @@ class Area
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToOne(targetEntity=Location::class, inversedBy="submap", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $name;
+    private $location;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
-    private $boundries;
+    private $mapsize;
 
     /**
-     * @ORM\OneToMany(targetEntity=Location::class, mappedBy="area", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Location::class, mappedBy="parent_map")
      */
     private $locations;
 
@@ -44,26 +45,26 @@ class Area
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getLocation(): ?Location
     {
-        return $this->name;
+        return $this->location;
     }
 
-    public function setName(string $name): self
+    public function setLocation(Location $location): self
     {
-        $this->name = $name;
+        $this->location = $location;
 
         return $this;
     }
 
-    public function getBoundries(): ?string
+    public function getMapsize(): ?string
     {
-        return $this->boundries;
+        return $this->mapsize;
     }
 
-    public function setBoundries(?string $boundries): self
+    public function setMapsize(?string $mapsize): self
     {
-        $this->boundries = $boundries;
+        $this->mapsize = $mapsize;
 
         return $this;
     }
@@ -80,7 +81,7 @@ class Area
     {
         if (!$this->locations->contains($location)) {
             $this->locations[] = $location;
-            $location->setArea($this);
+            $location->setParentMap($this);
         }
 
         return $this;
@@ -90,15 +91,16 @@ class Area
     {
         if ($this->locations->removeElement($location)) {
             // set the owning side to null (unless already changed)
-            if ($location->getArea() === $this) {
-                $location->setArea(null);
+            if ($location->getParentMap() === $this) {
+                $location->setParentMap(null);
             }
         }
 
         return $this;
     }
 
-    public function __toString(){
-        return $this->getName();
+    public function __toString()
+    {
+        return $this->getLocation()->getName();
     }
 }

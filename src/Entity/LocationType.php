@@ -129,7 +129,11 @@ class LocationType
     }
 
     public function __toString(){
-        return $this->getName();
+        if($this->getParentLocationType()){
+            return $this->getParentLocationType() . ':' . $this->getName();
+        }else {
+            return $this->getName();
+        }
     }
 
     public function getParentLocationType(): ?self
