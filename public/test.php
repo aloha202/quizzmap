@@ -1,6 +1,6 @@
 <?php
 
-
+    header('Access-Control-Allow-Origin: *');
     switch($_GET['p']){
         case 1:
             echo "<p>Content for this page</p>";
